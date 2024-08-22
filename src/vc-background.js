@@ -1,42 +1,8 @@
 let manifest = browser.runtime.getManifest();
 let allowedURLs = [];
-for (let i in manifest["content_scripts"]) {
-    let matches = manifest["content_scripts"][i]["matches"];
-    allowedURLs = [].concat(allowedURLs, matches);
-}
-//console.log(allowedURLs);
-//console.log(manifest);
 
-// ------------
-//const CSS = "body { border: 20px solid red; }";
-const CSS = ' \
-    /* body { border: 2px solid red; } */ \
-    /* Twitch */ \
-    .storiesLeftNavSection--csO9S { display: none !important; } /* Left sidebar "Open stories" */ \
-    .lcFJxY { display: none !important; } /* Following page Stories */  \
-    \
-    \
-    /* Youtube */ \
-    ytd-item-section-renderer:has(ytd-reel-shelf-renderer), \
-    ytd-rich-section-renderer:has([is-shorts]) { display: none !important; } \
-';
-/*
-    // Twitch
-    .storiesLeftNavSection--csO9S                               : Left sidebar "Open stories"
-    .lcFJxY                                                     : Following page Stories
-
-    // Youtube
-    ytd-item-section-renderer:has(ytd-reel-shelf-renderer)      : Shorts selector in list view
-    ytd-rich-section-renderer:has([is-shorts])                  : Shorts selector in grid view
-
-    ytd-item-section-renderer.style-scope.ytd-section-list-renderer:has(#contents > :not([thumbnail-style]) ) { border: 1px solid red !important; } \
-    ytd-reel-shelf-renderer     shorts
-    ytd-shelf-renderer          normal videos
-
-*/
-
-const TITLE_APPLY = `: Enable ${manifest.name}`;
-const TITLE_REMOVE = `: Disable ${manifest.name}`;
+const TITLE_APPLY = `Enable ${manifest.name} for `;
+const TITLE_REMOVE = `Disable ${manifest.name} for `;
 const APPLICABLE_PROTOCOLS = ["http:", "https:"];
 
 // Names as specified in the manifest section content-scripts
@@ -44,6 +10,13 @@ const CSSFILES = {
     "Twitch" : ["vc-twitch.css"],
     "Youtube" : ["vc-youtube.css"]
 };
+
+function getCSSFiles(siteId) {
+    if (Object.hasOwn(CSSFILES, siteId)) {
+        return CSSFILES[siteId];
+    }
+    return false;
+}
 
 /*
     Get Title including site identifier as specified by the custom property "name" in the manifest section "content-scripts"
@@ -65,14 +38,6 @@ async function getSiteTitle(tab) {
     return siteIdentifier;
 }
 
-function getCSSFiles(siteId) {
-    // do some error checking maybe?
-    if (Object.hasOwn(CSSFILES, siteId)) {
-        return CSSFILES[siteId];
-    }
-    return false;
-}
-
 async function toggleCleanup(tab) {
 
     let siteId = await getSiteTitle(tab);
@@ -81,10 +46,9 @@ async function toggleCleanup(tab) {
         var CSSfiles = getCSSFiles(siteId);
         if (!CSSfiles) return false;
 
-        if (title === siteId + TITLE_APPLY) {
-
+        if (title === TITLE_APPLY + siteId) {
             browser.pageAction.setIcon({tabId: tab.id, path: "icons/enabled.svg"});
-            browser.pageAction.setTitle({tabId: tab.id, title: siteId + TITLE_REMOVE});
+            browser.pageAction.setTitle({tabId: tab.id, title: TITLE_REMOVE + siteId});
            
             // Manifest V3
             browser.scripting.insertCSS({
@@ -96,9 +60,8 @@ async function toggleCleanup(tab) {
             });
     
         } else {
-
             browser.pageAction.setIcon({tabId: tab.id, path: "icons/disabled.svg"});
-            browser.pageAction.setTitle({tabId: tab.id, title: siteId + TITLE_APPLY});
+            browser.pageAction.setTitle({tabId: tab.id, title: TITLE_APPLY + siteId});
 
             // Manifest V3
             browser.scripting.removeCSS({
@@ -137,7 +100,7 @@ async function initializePageAction(tab) {
         let siteId = await getSiteTitle(tab);
 
         browser.pageAction.setIcon({tabId: tab.id, path: "icons/disabled.svg"});
-        browser.pageAction.setTitle({tabId: tab.id, title: siteId + TITLE_APPLY});
+        browser.pageAction.setTitle({tabId: tab.id, title: TITLE_APPLY + siteId});
         browser.pageAction.show(tab.id);
     }
 }
@@ -180,8 +143,6 @@ browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
     Single message handler to receive communication from content scripts
 */
 function handleMessage(message, sender, sendResponse) {
-//    console.log(`A content script sent a message: ${message.greeting}`);
-//    sendResponse({ response: "Response from background script" });
 
     let tab = sender.tab;
 
@@ -208,8 +169,6 @@ function handleMessage(message, sender, sendResponse) {
             break;
     }
 
-    console.log(respMessage);
     sendResponse({ response: respMessage });
-
 }
 browser.runtime.onMessage.addListener(handleMessage);

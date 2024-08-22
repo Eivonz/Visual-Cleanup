@@ -2,8 +2,8 @@
     "manifest_version": 3,
     "name": "Visual Cleanup",
     "version": "1.0",
-    "description": "Removes various visual clutter from Twitch & youtube.",
-    "homepage_url": "https://github.com/",
+    "description": "Removes various clutter from Twitch & Youtube.",
+    "homepage_url": "https://github.com/Eivonz/Visual-Cleanup",
     "author": "Eibon",
   
     "icons": {
@@ -22,7 +22,6 @@
         "scripts": ["vc-background.js"]
     },
 
-
     "content_scripts": [
       {
         "name": "Twitch",
@@ -36,14 +35,13 @@
       }
     ],
 
-
     "page_action": {
         "default_icon": "icons/enabled.svg"
     },
 
     "browser_specific_settings": {
         "gecko": {
-            "id": "todo@example.com"
+            "id": "vc@eibon.net"
         }
     }
 
