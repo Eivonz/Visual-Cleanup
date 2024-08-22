@@ -30,7 +30,7 @@ This is a personalized browser extension for Firefox (Chrome untested), that fix
 | Site	    | Path 	| Cleanup	|   
 |---	    |---	|---	|
 | Twitch 	| [/directory/following/*](https://www.twitch.com/directory/following)	| - Removal of the "Stories" from the left side navigation bar. <br/> - Removal of the large "Stories" banner at the top of the page. <br/>	|
-| Youtube  	| [/feed/subscriptions](https://www.youtube.com/feed/subscriptions)	| - Removal of the "Short" block from both Grid and List view. |
+| Youtube  	| [/feed/subscriptions](https://www.youtube.com/feed/subscriptions)	| - Removal of the "Shorts" block from both Grid and List view. |
 
 
 ### Extension variants
