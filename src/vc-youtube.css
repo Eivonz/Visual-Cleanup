@@ -1,0 +1,3 @@
+/* Youtube */
+ytd-item-section-renderer:has(ytd-reel-shelf-renderer), 
+    ytd-rich-section-renderer:has([is-shorts]) { display: none !important; }

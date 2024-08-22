@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "Visual Cleanup - Light",
+    "version": "1.0",
+    "description": "Removes various visual clutter from Twitch & youtube.",
+    "homepage_url": "https://github.com/",
+    "author": "Eibon",
+  
+    "icons": {
+      "48": "icons/icon48.png",
+      "96": "icons/icon96.png"
+    },
+  
+    "content_scripts": [
+      {
+        "matches": ["*://*.twitch.tv/*"],
+        "css": ["vc-twitch.css"]
+      },
+      {
+        "matches": ["*://*.youtube.com/*/subscriptions"],
+        "css": ["vc-youtube.css"]
+      }
+    ],
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "todo@example.com"
+        }
+    }
+
+  }
+  
